@@ -1,0 +1,25 @@
+name: .NET Core
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.101
+    - name: Build DisjointSets Library
+      run: dotnet build ./DisjointSet/DisjointSet.csproj --configuration Release
+    - name: Build Maze Library
+      run: dotnet build ./Maze/Maze.csproj --configuration Release
+    - name: Build Console runner
+      run: dotnet build ./console_driver/console_driver.csproj --configuration Release

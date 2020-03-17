@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Maze.DisjointSets;
 
 namespace Maze.Models
@@ -7,9 +8,12 @@ namespace Maze.Models
     {
         private int _size;
         public int MaxIndex => NumOfRooms - 1;
+        /// <summary>
+        /// Number of rows and colums
+        /// </summary>
         public int Size => _size;
         public int NumOfRooms => _size * _size;
-        private static RoomModel[] _rooms;
+        private static Cell[] _rooms;
 
         public void GenerateMaze()
         {
@@ -17,9 +21,10 @@ namespace Maze.Models
             int maxIndex = _size * _size - 1;
             int room1, room2, doorNum;
             var rand = new Random();
+            var visitedRooms = new HashSet<int>();
 
             // while start and end are not in the same set AND while everyroom has not been visited yet
-            while ((set.find(0) != set.find(maxIndex)) && GetNumberOfRoomsVisited() < _size * _size)
+            while ((set.find(0) != set.find(maxIndex)) && visitedRooms.Count < _size * _size)
             {
                 // pick a random room
                 room1 = rand.Next(maxIndex);
@@ -102,31 +107,31 @@ namespace Maze.Models
                     room2 = room1 - 1;
 
                 //mark room1 and room2 as visited
-                _rooms[room1].Visited = true;
-                _rooms[room2].Visited = true;
+                visitedRooms.Add(room1);
+                visitedRooms.Add(room2);
 
                 if (set.find(room1) != set.find(room2))
                 {
                     // open doors connecting room1 and room2
                     if (room1 - room2 == 1)  //room2 is to the left of room1
                     {
-                        _rooms[room1].Door3 = false;
-                        _rooms[room2].Door2 = false;
+                        _rooms[room1].West.OpenDoor();
+                        _rooms[room2].East.OpenDoor();
                     }
                     else if (room1 - room2 == -1)
                     {           // room2 is to the right of room1
-                        _rooms[room1].Door2 = false;
-                        _rooms[room2].Door3 = false;
+                        _rooms[room1].East.OpenDoor();
+                        _rooms[room2].West.OpenDoor();
                     }
                     else if (room1 - room2 == _size)
                     {   // room2 is to the north of room1
-                        _rooms[room1].Door0 = false;
-                        _rooms[room2].Door1 = false;
+                        _rooms[room1].North.OpenDoor();
+                        _rooms[room2].South.OpenDoor();
                     }
                     else
                     {                                   // room2 is to the south of room1
-                        _rooms[room1].Door1 = false;
-                        _rooms[room2].Door0 = false;
+                        _rooms[room1].South.OpenDoor();
+                        _rooms[room2].North.OpenDoor();
                     }
 
                     set.union(set.find(room1), set.find(room2));
@@ -144,41 +149,23 @@ namespace Maze.Models
         /// </summary>
         /// <returns>A sorted dictionary representing the solution in reverse order (starting at the exit and working backwards towards the entrance)</returns>
 
-        public RoomModel GetRoomAtIndex(int index)
+        public Cell GetCellAtIndex(int index)
         {
             return _rooms[index];
         }
 
-        public void MarkAllRoomsAsUnvisited()
-        {
-            for (int i = 0; i < NumOfRooms; i++)
-            {
-                _rooms[i].Visited = false;
-            }
-        }
-
-
         private void InitializeRooms()
         {
-            _rooms = new RoomModel[_size * _size];
+            _rooms = new Cell[_size * _size];
             for (int i = 0; i < _size * _size; i++)
             {
-                _rooms[i] = new RoomModel();
+                _rooms[i] = new Cell();
             }
 
-            _rooms[0].Door0 = false;
-            _rooms[MaxIndex].Door1 = false;
-        }
-
-        private int GetNumberOfRoomsVisited()
-        {
-            var roomsCount = 0;
-            for (int i = 0; i < _size * _size; i++)
-            {
-                roomsCount += _rooms[i].Visited ? 1 : 0;
-            }
-
-            return roomsCount;
+            // Open the north door for an entrance to the maze
+            _rooms[0].North.OpenDoor();;
+            // Open the bottom right corner south door as an exit for the maze
+            _rooms[MaxIndex].South.OpenDoor();;
         }
     }
 }

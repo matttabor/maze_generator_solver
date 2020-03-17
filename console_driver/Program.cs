@@ -29,7 +29,7 @@ namespace console_driver
             // print the north border first
             for (int i = 0; i < size; i++)
             {
-                if (maze.GetRoomAtIndex(i).Door0 == true)
+                if (maze.GetCellAtIndex(i).North.IsClosed)
                 {
                     Console.Write("+----");
                 }
@@ -45,7 +45,7 @@ namespace console_driver
             {
                 for (int j = i; j < i + size; ++j) // Prints the west wall
                 {
-                    if (maze.GetRoomAtIndex(j).Door3)
+                    if (maze.GetCellAtIndex(j).West.IsClosed)
                     {
                         Console.Write("|    ");
                     }
@@ -58,7 +58,7 @@ namespace console_driver
 
                 for (int j = i; j < i + size; ++j) // Prints the south wall
                 {
-                    if (maze.GetRoomAtIndex(j).Door1)
+                    if (maze.GetCellAtIndex(j).South.IsClosed)
                     {
                         Console.Write("+----");
                     }
@@ -79,7 +79,7 @@ namespace console_driver
             
             for (int i = 0; i < size; i++)
             {
-                if (maze.GetRoomAtIndex(i).Door0 == true)
+                if (maze.GetCellAtIndex(i).North.IsClosed)
                 {
                     Console.Write("+----");
                 }
@@ -98,13 +98,13 @@ namespace console_driver
                 {
                     Console.ResetColor();
                     var index = i + j;
-                    if (maze.GetRoomAtIndex(j).Door3 && hash.Contains(actualIndex))
+                    if (maze.GetCellAtIndex(j).West.IsClosed && hash.Contains(actualIndex))
                     {
                         Console.Write("| "); 
                         Console.ForegroundColor = System.ConsoleColor.Red;
                         Console.Write("X  ");
                     }
-                    else if (maze.GetRoomAtIndex(j).Door3 && !hash.Contains(actualIndex))
+                    else if (maze.GetCellAtIndex(j).West.IsClosed && !hash.Contains(actualIndex))
                     {
                         Console.Write("|    ");
                     }
@@ -129,7 +129,7 @@ namespace console_driver
                 
                 for (int j = i; j < i + size; ++j) // Prints the south wall
                 {
-                    if (maze.GetRoomAtIndex(j).Door1)
+                    if (maze.GetCellAtIndex(j).South.IsClosed)
                     {
                         Console.Write("+----");
                     }
@@ -145,35 +145,17 @@ namespace console_driver
         private static void PrintSolution(MazeModel maze, SortedDictionary<int, int> solution)
         {
             int start = 0;
-            maze.MarkAllRoomsAsUnvisited();
             var hash = new HashSet<int>();
             hash.Add(start);
 
-            maze.GetRoomAtIndex(0).Visited = true;
-            // Console.WriteLine("The path in reverse is: ");
             int cell = maze.MaxIndex;
             while (cell != start)
             {
-                // Console.Write($"  {cell}  ");
                 hash.Add(cell);
-                maze.GetRoomAtIndex(cell).Visited = true;
                 cell = solution[cell];
             }
-            // Console.WriteLine($"  {cell}  ");
-            maze.GetRoomAtIndex(cell).Visited = true;
 
-            // // print ascii solution
-            // Console.WriteLine("This is the solution");
-            // for (int i = 0; i < maze.NumOfRooms; ++i)
-            // {
-            //     if (maze.GetRoomAtIndex(i).Visited == true)
-            //         Console.Write("x");
-            //     else
-            //         Console.Write(" ");
-            //     if ((i + 1) % maze.Size == 0)
-            //         Console.WriteLine();
-            // }
-
+            // Display the ascii repesentation of the maze
             PrintMaze(maze, hash);
         }
     }

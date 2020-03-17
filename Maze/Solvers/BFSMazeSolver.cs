@@ -17,7 +17,7 @@ namespace Maze.Solvers
         public SortedDictionary<int, int> SolveMaze(MazeModel maze)
         {
             var queue = new Queue<int>();
-            maze.MarkAllRoomsAsUnvisited();
+            var vistedRooms = new HashSet<int>();
             var solution = new SortedDictionary<int, int>();
 
             var goalIndex = maze.MaxIndex;
@@ -25,7 +25,7 @@ namespace Maze.Solvers
             int row, col, nextRow, nextCol, nextCell;
 
             queue.Enqueue(startIndex);
-            maze.GetRoomAtIndex(startIndex).Visited = true;
+            vistedRooms.Add(startIndex);
 
             while (queue.Count >= 0)
             {
@@ -43,13 +43,13 @@ namespace Maze.Solvers
                 nextCol = col;
                 if (nextRow >= 0)
                 {
-                    if (!maze.GetRoomAtIndex(cell).Door0)
+                    if (maze.GetCellAtIndex(cell).North.IsOpen)
                     {
                         nextCell = nextRow * maze.Size + nextCol;
-                        if (maze.GetRoomAtIndex(nextCell).Visited == false)
+                        if(!vistedRooms.Contains(nextCell))
                         {
                             queue.Enqueue(nextCell);
-                            maze.GetRoomAtIndex(nextCell).Visited = true;
+                            vistedRooms.Add(nextCell);
                             solution.Add(nextCell, cell);
                         }
                     }
@@ -60,13 +60,13 @@ namespace Maze.Solvers
                 nextCol = col;
                 if (nextRow < maze.Size)
                 {
-                    if (!maze.GetRoomAtIndex(cell).Door1)
+                    if (maze.GetCellAtIndex(cell).South.IsOpen)
                     {
                         nextCell = nextRow * maze.Size + nextCol;
-                        if (!maze.GetRoomAtIndex(nextCell).Visited)
+                        if(!vistedRooms.Contains(nextCell))
                         {
                             queue.Enqueue(nextCell);
-                            maze.GetRoomAtIndex(nextCell).Visited = true;
+                            vistedRooms.Add(nextCell);
                             solution.Add(nextCell, cell);
                         }
                     }
@@ -76,11 +76,12 @@ namespace Maze.Solvers
                 nextRow = row;
                 nextCol = col + 1;
                 if( nextCol < maze.Size ){
-                    if(!maze.GetRoomAtIndex(cell).Door2){
+                    if(maze.GetCellAtIndex(cell).East.IsOpen){
                         nextCell = nextRow * maze.Size + nextCol;
-                        if(!maze.GetRoomAtIndex(nextCell).Visited) {
+                        if(!vistedRooms.Contains(nextCell)) 
+                        {
                             queue.Enqueue( nextCell );
-                            maze.GetRoomAtIndex(nextCell).Visited = true;
+                            vistedRooms.Add(nextCell);
                             solution.Add(nextCell, cell);
                         }
                     }
@@ -90,11 +91,12 @@ namespace Maze.Solvers
                 nextRow = row;
                 nextCol = col - 1;
                 if(nextCol >= 0 ){
-                    if(!maze.GetRoomAtIndex(cell).Door3){
+                    if(maze.GetCellAtIndex(cell).West.IsOpen){
                         nextCell = nextRow * maze.Size + nextCol;
-                        if(!maze.GetRoomAtIndex(nextCell).Visited) {
+                        if(!vistedRooms.Contains(nextCell))
+                        {
                             queue.Enqueue( nextCell );
-                            maze.GetRoomAtIndex(nextCell).Visited = true;
+                            vistedRooms.Add(nextCell);
                             solution.Add(nextCell, cell);
                         }
                     }

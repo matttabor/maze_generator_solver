@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using System;
+using Maze.Models;
 
-namespace maze_generator
+namespace Maze.Solvers
 {
     /// <summary>
     /// Maze solver that uses the breadth first search algorthm to find a solution
@@ -13,7 +14,7 @@ namespace maze_generator
         /// </summary>
         /// <param name="maze"></param>
         /// <returns></returns>
-        public SortedDictionary<int, int> SolveMaze(Maze maze)
+        public SortedDictionary<int, int> SolveMaze(MazeModel maze)
         {
             var queue = new Queue<int>();
             maze.MarkAllRoomsAsUnvisited();

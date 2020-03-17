@@ -1,4 +1,4 @@
-namespace maze_generator
+namespace Maze.Solvers
 {
     public enum MazeSolverType
     {

@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using Maze.Models;
+using Maze.Solvers;
 
-namespace maze_generator
+namespace console_driver
 {
     class Program
     {
         static void Main(string[] args)
         {
-            // TODO: Read N x N size in as an input
+             // TODO: Read N x N size in as an input
             var size = 15;
-            var maze = new Maze(size);
+            var maze = new MazeModel(size);
             Console.WriteLine();
             Console.WriteLine();
             maze.GenerateMaze();
@@ -21,7 +23,7 @@ namespace maze_generator
             PrintSolution(maze, solution);
         }
 
-        static void PrintMaze(Maze maze)
+        static void PrintMaze(MazeModel maze)
         {
             var size = maze.Size;
             // print the north border first
@@ -69,7 +71,7 @@ namespace maze_generator
             }
         }
 
-        static void PrintMaze(Maze maze, HashSet<int> hash)
+        static void PrintMaze(MazeModel maze, HashSet<int> hash)
         {
             var size = maze.Size;
             // print the north border first
@@ -140,7 +142,7 @@ namespace maze_generator
             }
         }
 
-        private static void PrintSolution(Maze maze, SortedDictionary<int, int> solution)
+        private static void PrintSolution(MazeModel maze, SortedDictionary<int, int> solution)
         {
             int start = 0;
             maze.MarkAllRoomsAsUnvisited();

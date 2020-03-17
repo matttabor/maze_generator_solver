@@ -1,4 +1,4 @@
-namespace maze_generator
+namespace Maze.DisjointSets
 {
     public class DisjointSet
     {

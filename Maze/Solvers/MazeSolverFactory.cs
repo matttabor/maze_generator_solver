@@ -1,6 +1,6 @@
 using System;
 
-namespace maze_generator
+namespace Maze.Solvers
 {
     public static class MazeSolverFactory
     {

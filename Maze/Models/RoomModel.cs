@@ -1,8 +1,8 @@
-namespace maze_generator
+namespace Maze.Models
 {
-    public class Room
+    public class RoomModel
     {
-        public Room()
+        public RoomModel()
         {
             Visited = false;
             Door0 = Door1 = Door2 = Door3 = true; // all closed to start

@@ -24,7 +24,7 @@ namespace Maze.Models
             var visitedRooms = new HashSet<int>();
 
             // while start and end are not in the same set AND while everyroom has not been visited yet
-            while ((set.find(0) != set.find(maxIndex)) && visitedRooms.Count < _size * _size)
+            while ((set.Find(0) != set.Find(maxIndex)) && visitedRooms.Count < NumOfRooms)
             {
                 // pick a random room
                 room1 = rand.Next(maxIndex);
@@ -34,9 +34,9 @@ namespace Maze.Models
                 // be chosen based upon where room1 is located
                 if (room1 < _size) // room1 is in first row
                 {
-                    if (room1 % _size == 0)
-                    { //room1 is in first row first col
-                        doorNum = rand.Next() % 2;   // only two doors availible - south and east
+                    if (room1 % _size == 0) //room1 is in first row first col
+                    {
+                        doorNum = rand.Next(1);   // only two doors availible - south and east
                         if (doorNum == 0)
                             doorNum = 2;
                         else
@@ -44,34 +44,33 @@ namespace Maze.Models
                     }
                     else if ((room1 + 1) % _size == 0)
                     {   // room1 is in first row last col
-                        doorNum = rand.Next() % 2;                   // only two doors availible - south and west
+                        doorNum = rand.Next(1); // only two doors availible - south and west
                         if (doorNum == 0)
                             doorNum = 1;
                         else
                             doorNum = 3;
                     }
-                    else
-                    {                           // door is somewhere in row 1
-                        doorNum = rand.Next() % 3 + 1; // only three doors availible - south, east and west
-
+                    else // door is somewhere in row 1
+                    {                      
+                        doorNum = rand.Next(3) + 1; // only three doors availible - south, east and west
                     }
                 }
                 else if (room1 > maxIndex - _size)
                 {   // room1 is in last row
                     if (room1 % _size == 0)
                     {           //room1 is in last row first col
-                        doorNum = rand.Next() % 2;           // only two doors availible - north and east
+                        doorNum = rand.Next(1);           // only two doors availible - north and east
                         if (doorNum == 1)
                             doorNum = 2;
                     }
-                    else if ((room1 + 1) % _size == 0)
-                    {   // room1 is in last row last col
-                        doorNum = rand.Next() % 2;                   // only two doors availible - North and west
+                    else if ((room1 + 1) % _size == 0) // room1 is in last row last col
+                    {
+                        doorNum = rand.Next(1); // only two doors availible - North and west
                         if (doorNum == 1)
                             doorNum = 3;
                     }
-                    else
-                    {                       // door is somewhere in last row 
+                    else  // door is somewhere in last row
+                    { 
                         doorNum = rand.Next(3);   // only three doors availible - North, East and West
                         if (doorNum == 1)
                             doorNum = 3;
@@ -79,16 +78,16 @@ namespace Maze.Models
                 }
                 else if (room1 % _size == 0)
                 { // room1 is in first column
-                    doorNum = rand.Next() % 3;       // only three doors availible - North and South and east
+                    doorNum = rand.Next(3);       // only three doors availible - North and South and east
                     if (doorNum == 3)
                         doorNum = 2;
                 }
                 else if ((room1 + 1) % _size == 0)
                 { // room1 is in last column
-                    doorNum = rand.Next() % 2;               // only three doors availible - North and South
+                    doorNum = rand.Next(2); // only three doors availible - North and South
                 }
                 else // no restrictions on random adjacent apply
-                    doorNum = rand.Next() % 4;
+                    doorNum = rand.Next(3);
 
                 // get room2 number based on door number
                 if (doorNum == 0)
@@ -110,7 +109,7 @@ namespace Maze.Models
                 visitedRooms.Add(room1);
                 visitedRooms.Add(room2);
 
-                if (set.find(room1) != set.find(room2))
+                if (set.Find(room1) != set.Find(room2))
                 {
                     // open doors connecting room1 and room2
                     if (room1 - room2 == 1)  //room2 is to the left of room1
@@ -134,7 +133,7 @@ namespace Maze.Models
                         _rooms[room2].North.OpenDoor();
                     }
 
-                    set.union(set.find(room1), set.find(room2));
+                    set.union(set.Find(room1), set.Find(room2));
                 }
             }
         }

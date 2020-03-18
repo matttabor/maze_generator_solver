@@ -1,5 +1,9 @@
 namespace Maze.DisjointSets
 {
+    /// <summary>
+    /// 
+    /// More information can be found: https://www.geeksforgeeks.org/disjoint-set-data-structures/
+    /// </summary>
     public class DisjointSet
     {
         int[] rank, parent;
@@ -26,7 +30,7 @@ namespace Maze.DisjointSets
         }
 
         // Returns representative of x's set 
-        public int find(int x)
+        public int Find(int x)
         {
             // Finds the representative of the set 
             // that x is an element of 
@@ -36,7 +40,7 @@ namespace Maze.DisjointSets
                 // if x is not the parent of itself 
                 // Then x is not the representative of 
                 // his set, 
-                parent[x] = find(parent[x]);
+                parent[x] = Find(parent[x]);
 
                 // so we recursively call Find on its parent 
                 // and move i's node directly under the 
@@ -46,11 +50,11 @@ namespace Maze.DisjointSets
         }
 
         // Unites the set that includes x and 
-        // the set that includes x 
+        // the set that includes y 
         public void union(int x, int y)
         {
             // Find representatives of two sets 
-            int xRoot = find(x), yRoot = find(y);
+            int xRoot = Find(x), yRoot = Find(y);
 
             // Elements are in the same set,  
             // no need to unite anything. 

@@ -15,6 +15,12 @@ namespace Maze.Models
         public int NumOfRooms => _size * _size;
         public Cell[] Rooms { get; set; }
 
+        public MazeModel(int size)
+        {
+            _size = size;
+            InitializeRooms();
+        }
+        
         public void GenerateMaze()
         {
             var set = new DisjointSet(_size * _size);
@@ -138,12 +144,6 @@ namespace Maze.Models
             }
         }
         
-        public MazeModel(int size)
-        {
-            _size = size;
-            InitializeRooms();
-        }
-
         /// <summary>
         /// 
         /// </summary>

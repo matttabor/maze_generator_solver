@@ -14,48 +14,59 @@
   <link href="css/style.css" rel="stylesheet">
 </head>
 
-<body style="padding: 15px;">
-  <form class="form-inline needs-validation" id="mazeForm">
-    <div class="form-group mx-sm-3 mb-2">
-      <label for="mazeSize" class="sr-only">Maze Size</label>
-      <input id="mazeSize" class="form-control" placeholder="maze size" type="number" required min="10" maxValue="70">
-      <div class="invalid-feedback">
-        Please choose a username.
+<body style="padding: 15px;" class="container-fluid">
+  <div class="container">
+    <div class="row">
+      <div>
+        <form class="form-inline needs-validation" id="mazeForm">
+          <div class="form-group mx-sm-3 mb-2">
+            <label for="mazeSize" class="sr-only">Maze Size</label>
+            <input id="mazeSize" class="form-control" placeholder="maze size" type="number" required min="10"
+              maxValue="70">
+            <div class="invalid-feedback">
+              Please choose a username.
+            </div>
+          </div>
+        </form>
       </div>
-    </div>
-    <button class="btn btn-success mb-2" type="submit" aria-disabled="true">Generate Maze</button>
-  </form>
-  <div class="alert alert-info alert-dismissible fade show" role="alert">
-    Choose a maze size and click the generate button to generate a new maze. Then use the arrow keys to move through the
-    maze. Good luck!
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <!-- <canvas id="canvas" width="1050" height="1050"></canvas> -->
-  <div class="wrapper">
-    <canvas id="pathCanvas" width="1050" height="1050"></canvas>
-    <canvas id="baseCanvas" width="1050" height="1050"></canvas>
-  </div>
-  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
-    aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLongTitle">You Won!</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          congratulations! You've done it, you solved the maze. Try your luck again.
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      <div class="col-sm">
+        <button class="btn btn-success mb-2" aria-disabled="true" onclick="generateMaze()">Generate Maze</button>
+        <button id="solveButton" style="display: none" class="btn btn-info mb-2" onclick="getSolution()"
+          aria-disabled="true">Solve Maze</button>
+      </div>
+
+      <div class="alert alert-info alert-dismissible fade show" role="alert">
+        Choose a maze size and click the generate button to generate a new maze. Then use the arrow keys to move through
+        the
+        maze. Good luck!
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <!-- <canvas id="canvas" width="1050" height="1050"></canvas> -->
+      <div class="wrapper">
+        <canvas id="pathCanvas" width="1050" height="1050"></canvas>
+        <canvas id="baseCanvas" width="1050" height="1050"></canvas>
+      </div>
+      <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">You Won!</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              congratulations! You've done it, you solved the maze. Try your luck again.
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
 </body>
 
 </html>

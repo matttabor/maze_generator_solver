@@ -22,12 +22,7 @@ var cursorFinishPositionY;
 $(document).ready(function () {
     $('#mazeForm').on('submit', function (event) {
         event.preventDefault();
-        size = $('#mazeSize').val();
-        baseCanvas.width = pathCanvas.width = size * lineLength + lineLength;
-        baseCanvas.height = pathCanvas.height = size * lineLength + lineLength;
-        cursorFinishPositionX = cursorStartPositionX + ((size - 1) * lineLength);
-        cursorFinishPositionY = cursorStartPositionY + ((size - 1) * lineLength);
-        loadMaze();
+        generateMaze();
     });
 
     window.onkeydown = processKey;
@@ -42,6 +37,31 @@ $(document).ready(function () {
         pathCanvasContext = pathCanvas.getContext('2d');
     }
 });
+
+function generateMaze() {
+    size = $('#mazeSize').val();
+    baseCanvas.width = pathCanvas.width = size * lineLength + lineLength * 2;
+    baseCanvas.height = pathCanvas.height = size * lineLength + lineLength * 2;
+    cursorFinishPositionX = cursorStartPositionX + ((size - 1) * lineLength);
+    cursorFinishPositionY = cursorStartPositionY + ((size - 1) * lineLength);
+    loadMaze();
+    $('#solveButton').show();
+}
+
+function getSolution() {
+    var data = JSON.stringify(maze);
+    $.ajax({
+        type: "POST",
+        contentType: 'application/json',
+        dataType: 'json',
+        url: "http://127.0.0.1:5000/api/maze/solution",
+        data: data,
+        success: function (result) {
+            drawSolution(result.reverse());
+            //$('#solveButton').hide();
+        },
+    });
+}
 
 function processKey(e) {
     if ([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
@@ -72,7 +92,7 @@ function processKey(e) {
     }
 
     if (dx != 0 || dy != 0) {
-        
+
         if (!checkForCollision(dx, dy)) {
             clearCanvas(pathCanvas);
 
@@ -81,7 +101,7 @@ function processKey(e) {
 
             pathCanvasContext.moveTo(cursorCurrentPositionX, cursorCurrentPositionY);
             pathCanvasContext.fillStyle = cursorFillColor;
-            
+
             pathCanvasContext.arc(cursorCurrentPositionX, cursorCurrentPositionY, 6, 0, Math.PI * 2, true);
             pathCanvasContext.fill();
 
@@ -101,7 +121,7 @@ function clearCanvas(canvas) {
     ctx.lineTo(0, 0);
     ctx.stroke();
     ctx.restore();
-  }
+}
 
 // Checks if moving from current cursor position going to cause a collision with a wall
 function checkForCollision(dx, dy) {
@@ -147,8 +167,7 @@ function loadMaze() {
 }
 
 function drawMaze() {
-
-    if(pathCanvasContext) {
+    if (pathCanvasContext) {
         pathCanvasContext.clearRect(0, 0, pathCanvas.width, pathCanvas.height);
         cursorCurrentPositionX = cursorStartPositionX;
         cursorCurrentPositionY = cursorStartPositionY;
@@ -222,6 +241,26 @@ function drawMaze() {
         pathCanvasContext.arc(cursorStartPositionX, cursorStartPositionY, 6, 0, Math.PI * 2, true);
         pathCanvasContext.fill();
 
-        
+
+    }
+}
+
+function drawSolution(solution) {
+    pathCanvasContext.moveTo(cursorStartPositionX, cursorStartPositionY);
+    pathCanvasContext.beginPath();
+    pathCanvasContext.strokeStyle = "red";
+    pathCanvasContext.lineWidth = 4;
+
+    for (var i = 0; i < solution.length; i++) {
+        // convert index to screen position
+        var index = solution[i];
+
+        var row = parseInt(index / size);
+        var col = index % size;
+        var x = col * lineLength + 20 + 10;
+        var y = row * lineLength + 20 + 10;
+        pathCanvasContext.lineTo(x, y);
+        pathCanvasContext.moveTo(x, y);
+        pathCanvasContext.stroke();
     }
 }

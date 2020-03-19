@@ -10,11 +10,10 @@ namespace Maze.Models
         /// <summary>
         /// Creates a new instance of a door. Door is set to closed by default.
         /// </summary>
-        public Door()
+        public Door(DoorStatus status = DoorStatus.CLOSED)
         {
-            _status = DoorStatus.CLOSED;
+            _status = status;
         }
-
 
         public bool IsOpen => _status == DoorStatus.OPEN;
         public bool IsClosed => _status == DoorStatus.CLOSED;

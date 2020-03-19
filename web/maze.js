@@ -36,19 +36,26 @@ $(document).ready(function () {
     if (pathCanvas.getContext) {
         pathCanvasContext = pathCanvas.getContext('2d');
     }
+
+    $('#mazeSize').keyup(function() {
+
+        var s = this;
+        s.validity.valid ? $('#generateButton').prop('disabled', false) : $('#generateButton').prop('disabled', true);
+    });
 });
 
 function generateMaze() {
+    $('#generateButton').prop('disabled', true);
     size = $('#mazeSize').val();
     baseCanvas.width = pathCanvas.width = size * lineLength + lineLength * 2;
     baseCanvas.height = pathCanvas.height = size * lineLength + lineLength * 2;
     cursorFinishPositionX = cursorStartPositionX + ((size - 1) * lineLength);
     cursorFinishPositionY = cursorStartPositionY + ((size - 1) * lineLength);
     loadMaze();
-    $('#solveButton').show();
 }
 
 function getSolution() {
+    $('#spinner').show();
     var data = JSON.stringify(maze);
     $.ajax({
         type: "POST",
@@ -58,7 +65,8 @@ function getSolution() {
         data: data,
         success: function (result) {
             drawSolution(result.reverse());
-            //$('#solveButton').hide();
+            $('#solveButton').hide();
+            $('#spinner').hide();
         },
     });
 }
@@ -155,6 +163,7 @@ function checkForCollision(dx, dy) {
 }
 
 function loadMaze() {
+    $('#spinner').show();
     $.ajax({
         url: "http://127.0.0.1:5000/api/maze/" + size,
         contentType: "application/json",
@@ -162,6 +171,9 @@ function loadMaze() {
         success: function (result) {
             maze = result;
             drawMaze();
+            $('#spinner').hide();
+            $('#generateButton').prop('disabled', false);
+            $('#solveButton').show();
         }
     });
 }
@@ -260,7 +272,8 @@ function drawSolution(solution) {
         var x = col * lineLength + 20 + 10;
         var y = row * lineLength + 20 + 10;
         pathCanvasContext.lineTo(x, y);
-        pathCanvasContext.moveTo(x, y);
         pathCanvasContext.stroke();
+
+        pathCanvasContext.moveTo(x, y);
     }
 }

@@ -1,0 +1,27 @@
+/* * { margin: 0; padding: 0;}
+
+body, html { 
+    height:100%; 
+}
+
+body { 
+	text-align:center;
+}
+
+#canvas {
+	position:absolute;
+	width:100%;
+	height:100%;
+} */
+
+.wrapper {
+    position: relative;
+    width: 100vw;
+    height: calc(100vh - 60px);
+}
+
+.wrapper canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+}

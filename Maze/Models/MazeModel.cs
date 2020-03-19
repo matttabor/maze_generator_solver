@@ -13,7 +13,7 @@ namespace Maze.Models
         /// </summary>
         public int Size => _size;
         public int NumOfRooms => _size * _size;
-        private static Cell[] _rooms;
+        public Cell[] Rooms { get; set; }
 
         public void GenerateMaze()
         {
@@ -114,29 +114,30 @@ namespace Maze.Models
                     // open doors connecting room1 and room2
                     if (room1 - room2 == 1)  //room2 is to the left of room1
                     {
-                        _rooms[room1].West.OpenDoor();
-                        _rooms[room2].East.OpenDoor();
+                        Rooms[room1].West.OpenDoor();
+                        Rooms[room2].East.OpenDoor();
                     }
                     else if (room1 - room2 == -1)
                     {           // room2 is to the right of room1
-                        _rooms[room1].East.OpenDoor();
-                        _rooms[room2].West.OpenDoor();
+                        Rooms[room1].East.OpenDoor();
+                        Rooms[room2].West.OpenDoor();
                     }
                     else if (room1 - room2 == _size)
                     {   // room2 is to the north of room1
-                        _rooms[room1].North.OpenDoor();
-                        _rooms[room2].South.OpenDoor();
+                        Rooms[room1].North.OpenDoor();
+                        Rooms[room2].South.OpenDoor();
                     }
                     else
                     {                                   // room2 is to the south of room1
-                        _rooms[room1].South.OpenDoor();
-                        _rooms[room2].North.OpenDoor();
+                        Rooms[room1].South.OpenDoor();
+                        Rooms[room2].North.OpenDoor();
                     }
 
                     set.union(set.Find(room1), set.Find(room2));
                 }
             }
         }
+        
         public MazeModel(int size)
         {
             _size = size;
@@ -150,21 +151,21 @@ namespace Maze.Models
 
         public Cell GetCellAtIndex(int index)
         {
-            return _rooms[index];
+            return Rooms[index];
         }
 
         private void InitializeRooms()
         {
-            _rooms = new Cell[_size * _size];
+            Rooms = new Cell[_size * _size];
             for (int i = 0; i < _size * _size; i++)
             {
-                _rooms[i] = new Cell();
+                Rooms[i] = new Cell();
             }
 
             // Open the north door for an entrance to the maze
-            _rooms[0].North.OpenDoor();;
+            Rooms[0].North.OpenDoor();;
             // Open the bottom right corner south door as an exit for the maze
-            _rooms[MaxIndex].South.OpenDoor();;
+            Rooms[MaxIndex].South.OpenDoor();;
         }
     }
 }

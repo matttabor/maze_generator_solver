@@ -1,9 +1,9 @@
 
 var maze;
 var size;
-var lineLength = 20;
-var cursorStartPositionX = lineLength + (lineLength / 2);
-var cursorStartPositionY = lineLength + (lineLength / 2);
+var lineLength;
+var cursorStartPositionX;
+var cursorStartPositionY;;
 var cursorFillColor = "rgba(40, 167, 69, .80)";
 var lineFillColor = "rgba(255, 255, 255, 1)";
 var visited = [];
@@ -41,7 +41,6 @@ $(document).ready(function () {
     }
 
     $('#mazeSize').keyup(function () {
-
         var s = this;
         s.validity.valid ? $('#generateButton').prop('disabled', false) : $('#generateButton').prop('disabled', true);
     });
@@ -50,6 +49,25 @@ $(document).ready(function () {
 function generateMaze() {
     $('#generateButton').prop('disabled', true);
     size = $('#mazeSize').val();
+    if(size <= 15) {
+        lineLength = 35;
+    } else if(size <= 25) {
+        lineLength = 30;
+    }  else if (size <= 35) {
+        lineLength = 25;
+    } else if(size <= 45) {
+        lineLength = 20;
+    } else if(size <= 55) {
+        lineLength = 16;
+    } else if(size <= 65) {
+        lineLength = 14;
+    } else {
+        lineLength = 13;
+    }
+
+    cursorStartPositionX = lineLength + (lineLength / 2);
+    cursorStartPositionY = lineLength + (lineLength / 2);
+
     baseCanvas.width = pathCanvas.width = size * lineLength + lineLength * 2;
     baseCanvas.height = pathCanvas.height = size * lineLength + lineLength * 2;
     cursorFinishPositionX = cursorStartPositionX + ((size - 1) * lineLength);
@@ -227,7 +245,7 @@ function drawMaze() {
         baseCanvasContext.clearRect(0, 0, baseCanvas.width, baseCanvas.height);
         baseCanvasContext.fillStyle = lineFillColor;
         baseCanvasContext.beginPath();
-        var x = 20, y = 20;
+        var x = lineLength, y = lineLength;
 
         var size = maze.size;
         // draw the north border wall
@@ -244,7 +262,7 @@ function drawMaze() {
         // draw the interior walls
         for (var i = 0; i < maze.numOfRooms; i += size) // rows
         {
-            x = 20;
+            x = lineLength;
             y = row * lineLength + lineLength;
 
             for (var j = i; j < i + size; ++j) // Prints the west walls
@@ -263,7 +281,7 @@ function drawMaze() {
             baseCanvasContext.lineTo(x, y + lineLength);
             baseCanvasContext.stroke();
 
-            x = 20;
+            x = lineLength;
             y = row * lineLength + lineLength + lineLength;
             for (var j = i; j < i + size; ++j) // Prints the south wall
             {
@@ -305,8 +323,8 @@ function drawSolution(solution) {
 
         var row = parseInt(index / size);
         var col = index % size;
-        var x = col * lineLength + 20 + 10;
-        var y = row * lineLength + 20 + 10;
+        var x = col * lineLength + (lineLength + lineLength / 2);
+        var y = row * lineLength + (lineLength + lineLength / 2);
         pathCanvasContext.lineTo(x, y);
         pathCanvasContext.stroke();
 

@@ -4,8 +4,9 @@ var size;
 var lineLength = 20;
 var cursorStartPositionX = lineLength + (lineLength / 2);
 var cursorStartPositionY = lineLength + (lineLength / 2);
-var cursorFillColor = "rgba(255, 204, 0, 1)";
+var cursorFillColor = "rgba(40, 167, 69, .80)";
 var lineFillColor = "rgba(255, 255, 255, 1)";
+var visited = [];
 
 // Canvas variables
 // We have two canvases on top of each other to make it easier to clear the path when moving 
@@ -39,7 +40,7 @@ $(document).ready(function () {
         pathCanvasContext = pathCanvas.getContext('2d');
     }
 
-    $('#mazeSize').keyup(function() {
+    $('#mazeSize').keyup(function () {
 
         var s = this;
         s.validity.valid ? $('#generateButton').prop('disabled', false) : $('#generateButton').prop('disabled', true);
@@ -83,42 +84,85 @@ function processKey(e) {
 
     // The up arrow was pressed, so move up.
     if (e.keyCode == 38) {
-        dy = -20;
+        dy = -lineLength;
     }
 
     // The down arrow was pressed, so move down.
     if (e.keyCode == 40) {
-        dy = 20;
+        dy = lineLength;
     }
 
     // The left arrow was pressed, so move left.
     if (e.keyCode == 37) {
-        dx = -20;
+        dx = -lineLength;
     }
 
     // The right arrow was pressed, so move right.
     if (e.keyCode == 39) {
-        dx = 20;
+        dx = lineLength;
     }
 
     if (dx != 0 || dy != 0) {
+        pathCanvasContext.strokeStyle = cursorFillColor;
+        pathCanvasContext.lineWidth = 4;
 
         if (!checkForCollision(dx, dy)) {
-            clearCanvas(pathCanvas);
 
-            cursorCurrentPositionX += dx;
-            cursorCurrentPositionY += dy;
+            // visited.push({'x': 30, 'y': 30 });
+            var nextPositionX = cursorCurrentPositionX + dx;
+            var nextPositionY = cursorCurrentPositionY + dy;
+            var nextIndex = getIndexFromCurrentPosition(cursorCurrentPositionX + dx);
+            var currentIndex = getIndexFromCurrentPosition(cursorCurrentPositionX, cursorCurrentPositionY);
 
-            pathCanvasContext.moveTo(cursorCurrentPositionX, cursorCurrentPositionY);
-            pathCanvasContext.fillStyle = cursorFillColor;
+            var matchedItems = visited.filter(function(line) {
+                return line.x0 === nextPositionX && line.y0 === nextPositionY;
+            });
 
-            pathCanvasContext.arc(cursorCurrentPositionX, cursorCurrentPositionY, 6, 0, Math.PI * 2, true);
-            pathCanvasContext.fill();
-
-            if (cursorCurrentPositionX == cursorFinishPositionX && cursorCurrentPositionY == cursorFinishPositionY) {
-                $('#myModal').modal("show");
+            if(matchedItems  && matchedItems.length > 0) {
+                visited.splice(visited.length - 1, 1);
             }
+            else {
+                visited.push({ 'x0': cursorCurrentPositionX, 'y0': cursorCurrentPositionY, 'x1': nextPositionX, 'y1': nextPositionY });
+            }
+
+            // for (var i = 0; i < visited.length; i++) {
+            //     if (visited[i].x0 == nextPositionX && visited[i].y0 == nextPositionY) {
+                    
+            //     }
+            // }
+
+        
+        redrawPath();
+        // if(visited.indexOf(nextIndex) > -1) {
+        //     console.log("going to a cell that I've visited before");
+        //     visited.slice(currentIndex, 1);
+        //     pathCanvasContext.clearRect(cursorCurrentPositionX - 3, cursorCurrentPositionY - 3, 6, 6);
+        // }
+        // pathCanvasContext.moveTo(cursorCurrentPositionX, cursorCurrentPositionY);
+
+        cursorCurrentPositionX += dx;
+        cursorCurrentPositionY += dy;
+
+        // pathCanvasContext.lineTo(cursorCurrentPositionX, cursorCurrentPositionY);
+        // pathCanvasContext.stroke();
+        // visited.push(currentIndex);
+
+        if (cursorCurrentPositionX == cursorFinishPositionX && cursorCurrentPositionY == cursorFinishPositionY) {
+            $('#myModal').modal("show");
         }
+    }
+}
+}
+
+function redrawPath() {
+
+    clearCanvas(pathCanvas);
+    for (var i = 0; i < visited.length; i++) {
+        var point = visited[i];
+        pathCanvasContext.beginPath();
+        pathCanvasContext.moveTo(point.x0, point.y0);
+        pathCanvasContext.lineTo(point.x1, point.y1);
+        pathCanvasContext.stroke();
     }
 }
 
@@ -133,15 +177,23 @@ function clearCanvas(canvas) {
     ctx.restore();
 }
 
-// Checks if moving from current cursor position going to cause a collision with a wall
-function checkForCollision(dx, dy) {
-
+function getIndexFromCurrentPosition(cursorCurrentPositionX, cursorCurrentPositionY) {
     // convert current x y coordinates to an array index
     var realPositionX = cursorCurrentPositionX - (lineLength / 2) - lineLength;
     var realPositionY = cursorCurrentPositionY - (lineLength / 2) - lineLength;
     var row = realPositionY / lineLength;
     var col = realPositionX / lineLength;
-    var currentCellIndex = row * size + col;
+    return row * size + col;
+}
+
+// Checks if moving from current cursor position going to cause a collision with a wall
+function checkForCollision(dx, dy) {
+
+    var realPositionX = cursorCurrentPositionX - (lineLength / 2) - lineLength;
+    var realPositionY = cursorCurrentPositionY - (lineLength / 2) - lineLength;
+    var row = realPositionY / lineLength;
+    var col = realPositionX / lineLength;
+    var currentCellIndex = getIndexFromCurrentPosition(cursorCurrentPositionX, cursorCurrentPositionY);
     var cell = maze.rooms[currentCellIndex];
 
     if (dy < 0) {
@@ -254,7 +306,6 @@ function drawMaze() {
         pathCanvasContext.fillStyle = cursorFillColor;
         pathCanvasContext.arc(cursorStartPositionX, cursorStartPositionY, 6, 0, Math.PI * 2, true);
         pathCanvasContext.fill();
-
 
     }
 }

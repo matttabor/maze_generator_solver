@@ -24,7 +24,7 @@ jobs:
       run: dotnet build ./maze-api/maze-api.csproj --configuration Release
 
     - name: dotnet publish
-      run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/maze-api
+      run: dotnet publish ./maze-api/maze-api.csproj -c Release -o ${{env.DOTNET_ROOT}}/maze-api
 
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v1

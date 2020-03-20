@@ -156,14 +156,17 @@ function redrawPath() {
     clearCanvas(pathCanvas);
     pathCanvasContext.strokeStyle = cursorFillColor;
     pathCanvasContext.lineWidth = 6;
-    pathCanvasContext.lineJoin = "miter";
+    pathCanvasContext.lineJoin = "round";
+    pathCanvasContext.beginPath();
+    pathCanvasContext.moveTo(cursorStartPositionX, cursorStartPositionY);
     for (var i = 0; i < visited.length; i++) {
         var point = visited[i];
-        pathCanvasContext.beginPath();
-        pathCanvasContext.moveTo(point.x0, point.y0);
+        
         pathCanvasContext.lineTo(point.x1, point.y1);
-        pathCanvasContext.stroke();
+        
     }
+
+    pathCanvasContext.stroke();
 }
 
 function clearCanvas(canvas) {

@@ -24,7 +24,7 @@ jobs:
       run: dotnet build --configuration Release
 
     - name: dotnet publish
-      run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+      run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/maze-api
 
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v1
@@ -32,4 +32,4 @@ jobs:
         app-name: 'maze-generator'
         slot-name: 'production'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_aa727b4fad7a4a36a53616051c9e517a }}
-        package: ${{env.DOTNET_ROOT}}/myapp 
+        package: ${{env.DOTNET_ROOT}}/maze-api 

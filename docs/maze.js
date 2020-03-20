@@ -103,60 +103,42 @@ function processKey(e) {
     }
 
     if (dx != 0 || dy != 0) {
-        pathCanvasContext.strokeStyle = cursorFillColor;
-        pathCanvasContext.lineWidth = 4;
+
 
         if (!checkForCollision(dx, dy)) {
 
             // visited.push({'x': 30, 'y': 30 });
             var nextPositionX = cursorCurrentPositionX + dx;
             var nextPositionY = cursorCurrentPositionY + dy;
-            var nextIndex = getIndexFromCurrentPosition(cursorCurrentPositionX + dx);
-            var currentIndex = getIndexFromCurrentPosition(cursorCurrentPositionX, cursorCurrentPositionY);
 
-            var matchedItems = visited.filter(function(line) {
+            var matchedItems = visited.filter(function (line) {
                 return line.x0 === nextPositionX && line.y0 === nextPositionY;
             });
 
-            if(matchedItems  && matchedItems.length > 0) {
+            if (matchedItems && matchedItems.length > 0) {
                 visited.splice(visited.length - 1, 1);
             }
             else {
                 visited.push({ 'x0': cursorCurrentPositionX, 'y0': cursorCurrentPositionY, 'x1': nextPositionX, 'y1': nextPositionY });
             }
 
-            // for (var i = 0; i < visited.length; i++) {
-            //     if (visited[i].x0 == nextPositionX && visited[i].y0 == nextPositionY) {
-                    
-            //     }
-            // }
+            redrawPath();
+            cursorCurrentPositionX += dx;
+            cursorCurrentPositionY += dy;
 
-        
-        redrawPath();
-        // if(visited.indexOf(nextIndex) > -1) {
-        //     console.log("going to a cell that I've visited before");
-        //     visited.slice(currentIndex, 1);
-        //     pathCanvasContext.clearRect(cursorCurrentPositionX - 3, cursorCurrentPositionY - 3, 6, 6);
-        // }
-        // pathCanvasContext.moveTo(cursorCurrentPositionX, cursorCurrentPositionY);
-
-        cursorCurrentPositionX += dx;
-        cursorCurrentPositionY += dy;
-
-        // pathCanvasContext.lineTo(cursorCurrentPositionX, cursorCurrentPositionY);
-        // pathCanvasContext.stroke();
-        // visited.push(currentIndex);
-
-        if (cursorCurrentPositionX == cursorFinishPositionX && cursorCurrentPositionY == cursorFinishPositionY) {
-            $('#myModal').modal("show");
+            if (cursorCurrentPositionX == cursorFinishPositionX && cursorCurrentPositionY == cursorFinishPositionY) {
+                $('#myModal').modal("show");
+            }
         }
     }
-}
 }
 
 function redrawPath() {
 
     clearCanvas(pathCanvas);
+    pathCanvasContext.strokeStyle = cursorFillColor;
+    pathCanvasContext.lineWidth = 6;
+    pathCanvasContext.lineJoin = "miter";
     for (var i = 0; i < visited.length; i++) {
         var point = visited[i];
         pathCanvasContext.beginPath();
@@ -233,6 +215,7 @@ function loadMaze() {
 }
 
 function drawMaze() {
+    visited = [];
     if (pathCanvasContext) {
         pathCanvasContext.clearRect(0, 0, pathCanvas.width, pathCanvas.height);
         cursorCurrentPositionX = cursorStartPositionX;

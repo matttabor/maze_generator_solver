@@ -19,6 +19,8 @@ var cursorCurrentPositionY = cursorStartPositionY;
 var cursorFinishPositionX;
 var cursorFinishPositionY;
 
+var baseApiUrl = "https://maze-generator.azurewebsites.net/api";
+
 $(document).ready(function () {
     $('#mazeForm').on('submit', function (event) {
         event.preventDefault();
@@ -61,7 +63,7 @@ function getSolution() {
         type: "POST",
         contentType: 'application/json',
         dataType: 'json',
-        url: "http://127.0.0.1:5000/api/maze/solution",
+        url: baseApiUrl + "/maze/solution",
         data: data,
         success: function (result) {
             drawSolution(result.reverse());
@@ -165,7 +167,7 @@ function checkForCollision(dx, dy) {
 function loadMaze() {
     $('#spinner').show();
     $.ajax({
-        url: "http://127.0.0.1:5000/api/maze/" + size,
+        url: baseApiUrl + "/maze/" + size,
         contentType: "application/json",
         dataType: 'json',
         success: function (result) {
